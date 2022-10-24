@@ -28,7 +28,7 @@ The [backend](./backend/README.md) directory contains a partially completed Flas
 
 1. `backend/flaskr/__init__.py`
 2. `backend/test_flaskr.py`
-
+3. After installing all requirements dependencies, create db use setup.sql, then go to main project directory, and run psql -d trivia -U postgres -a -f trivia.psql to add sample data for database mydb
 > View the [Backend README](./backend/README.md) for more details. 
 
 ### Frontend
