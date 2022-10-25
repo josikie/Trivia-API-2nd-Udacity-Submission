@@ -142,7 +142,7 @@ def create_app(test_config=None):
     category to be shown.
     """
     @app.route('/categories/<int:category_id>/questions')
-    def getQuestionsByCaegories(category_id):
+    def getQuestionsByCategory(category_id):
         # get specific category 
         category = Category.query.filter_by(id=category_id).one_or_none()
         if category is None:
