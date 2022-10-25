@@ -16,15 +16,18 @@ class QuestionView extends Component {
     };
   }
 
+  paginated = ''
   componentDidMount() {
     this.getQuestions();
   }
+
 
   getQuestions = () => {
     $.ajax({
       url: `/questions?page=${this.state.page}`, //TODO: update request URL
       type: 'GET',
       success: (result) => {
+        this.paginated = 'paginated'
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
@@ -47,18 +50,24 @@ class QuestionView extends Component {
   createPagination() {
     let pageNumbers = [];
     let maxPage = Math.ceil(this.state.totalQuestions / 10);
-    for (let i = 1; i <= maxPage; i++) {
-      pageNumbers.push(
-        <span
-          key={i}
-          className={`page-num ${i === this.state.page ? 'active' : ''}`}
-          onClick={() => {
-            this.selectPage(i);
-          }}
-        >
-          {i}
-        </span>
-      );
+    if(this.paginated === 'paginated'){
+      for (let i = 1; i <= maxPage; i++) {
+        pageNumbers.push(
+          <span
+            key={i}
+            className={`page-num ${i === this.state.page ? 'active' : ''}`}
+            onClick={() => {
+              this.selectPage(i);
+            }}
+            >
+            {i}
+          </span>
+        );
+      }
+    }else if(this.paginated === 'search'){
+      console.log(this.paginated)
+    }else{
+      console.log(this.paginated)
     }
     return pageNumbers;
   }
@@ -68,6 +77,7 @@ class QuestionView extends Component {
       url: `/categories/${id}/questions`, //TODO: update request URL
       type: 'GET',
       success: (result) => {
+        this.paginated = 'category'
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
@@ -94,6 +104,7 @@ class QuestionView extends Component {
       },
       crossDomain: true,
       success: (result) => {
+        this.paginated = 'search'
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
@@ -148,8 +159,8 @@ class QuestionView extends Component {
                 {this.state.categories[id]}
                 <img
                   className='category'
-                  alt={`${this.state.categories[id].toLowerCase()}`}
-                  src={`${this.state.categories[id].toLowerCase()}.svg`}
+                  alt={`${this.state.categories[id]}`}
+                  src={`${this.state.categories[id]}.svg`}
                 />
               </li>
             ))}
@@ -168,6 +179,7 @@ class QuestionView extends Component {
               questionAction={this.questionAction(q.id)}
             />
           ))}
+          
           <div className='pagination-menu'>{this.createPagination()}</div>
         </div>
       </div>
