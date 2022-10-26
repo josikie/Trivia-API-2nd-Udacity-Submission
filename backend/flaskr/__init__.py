@@ -218,13 +218,13 @@ def create_app(test_config=None):
                 totalQuestions = 5
 
         # get random number
-        randomNumber = random.randint(0, len(questions)-1)
+        randomNumber = random.randint(1, len(questions))
         # if length of previous questions is 0, then place
-        randomQuestion = questions[randomNumber]
-        # function recursive if previous question == random question and id of random questions less than all of questions
+        # do function recursive if random question is in previous questions
         for previousQuestion in previousQuestions:
-            if previousQuestion == randomQuestion['id'] and randomQuestion['id'] < len(questions):
+            if previousQuestion == randomNumber and randomNumber-1 <= len(questions):
                 random_question(questions, previousQuestions)
+        randomQuestion = questions[randomNumber-1]
         return [randomQuestion, totalQuestions]
 
     @app.route('/quizzes', methods=['POST'])
