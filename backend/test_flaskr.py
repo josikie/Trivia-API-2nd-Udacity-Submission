@@ -1,4 +1,5 @@
 import os
+from unicodedata import category
 import unittest
 import json
 from urllib import request
@@ -128,7 +129,7 @@ class TriviaTestCase(unittest.TestCase):
         
     def test_422_create_question(self):
         req = self.client().post('/questions', json={'id' : 23, 'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
-        data = json.loads(req.status_code)
+        data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 422)
         self.assertEqual(data['success'], False)
@@ -141,6 +142,45 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(req.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'unprocessable')
+
+    def test_get_next_question(self):
+        with self.app.app_context():
+            previous_questions = Question.query.order_by(Question.id).filter(Question.category==2).all()
+            questions = [previous_question.id for previous_question in previous_questions]
+        req = self.client().post('/quizzes', json={'previous_questions' : questions[0:1], 'quiz_category' : {'id' : 2}})
+        data = json.loads(req.data)
+        print(data['question'])
+        print(data['previous'])
+
+        self.assertEqual(req.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len([data['question']]), 1)
+        self.assertTrue(data['total_questions'])
+
+    def test_404_get_next_question(self):
+        with self.app.app_context():
+            previous_questions = Question.query.order_by(Question.id).filter(Question.category==2).all()
+            questions = [previous_question.id for previous_question in previous_questions]
+        req = self.client().post('/quizzes', json={'previous_questions' : questions[0:1]})
+        data = json.loads(req.data)
+
+        self.assertEqual(req.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
+    
+    def test_get_next_question_all_category(self):
+        with self.app.app_context():
+            previous_questions = Question.query.order_by(Question.id).all()
+            questions = [previous_question.id for previous_question in previous_questions]
+        req = self.client().post('/quizzes', json={'previous_questions' : questions[0:2], 'quiz_category' : {'id' : 0}})
+        data = json.loads(req.data)
+        print(f'\n{data}')
+
+        self.assertEqual(req.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len([data['question']]), 1)
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

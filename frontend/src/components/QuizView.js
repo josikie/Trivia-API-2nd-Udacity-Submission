@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import '../stylesheets/QuizView.css';
 
-const questionsPerPlay = 5;
-
 class QuizView extends Component {
   constructor(props) {
     super();
@@ -16,6 +14,7 @@ class QuizView extends Component {
       currentQuestion: {},
       guess: '',
       forceEnd: false,
+      perplay: 0
     };
   }
 
@@ -68,6 +67,8 @@ class QuizView extends Component {
           currentQuestion: result.question,
           guess: '',
           forceEnd: result.question ? false : true,
+          perplay: result.total_questions
+          
         });
         return;
       },
@@ -96,6 +97,7 @@ class QuizView extends Component {
       currentQuestion: {},
       guess: '',
       forceEnd: false,
+      perplay: 0
     });
   };
 
@@ -170,7 +172,7 @@ class QuizView extends Component {
   }
 
   renderPlay() {
-    return this.state.previousQuestions.length === questionsPerPlay ||
+    return this.state.previousQuestions.length === this.state.perplay ||
       this.state.forceEnd ? (
       this.renderFinalScore()
     ) : this.state.showAnswer ? (

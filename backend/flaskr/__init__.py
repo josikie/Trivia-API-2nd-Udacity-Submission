@@ -1,9 +1,8 @@
 import json
+from multiprocessing import current_process
 import os
-from unicodedata import category
 from unittest import result
 from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy 
 from flask_cors import CORS
 import random
 
@@ -196,6 +195,56 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+
+    def random_question(quizCategory, previousQuestions):
+        # if the category is 0, then fetch all questions in the database
+        if quizCategory == 0:
+            allQuestions = Question.query.order_by(Question.id).all()
+        # if the category is not 0, then fetch specific questions based on its category number in the database
+        else:
+            allQuestions = Question.query.order_by(Question.id).filter(Question.category==quizCategory).all()
+        
+        # change the fetched data type to list
+        questions = [allQuestion.format() for allQuestion in allQuestions]
+
+        # initialize total questions
+        totalQuestions = 0
+        if quizCategory == 0:
+            totalQuestions = 5
+        else :
+            if len(questions) < 5:
+                totalQuestions = len(questions)
+            else:
+                totalQuestions = 5
+
+        # get random number
+        randomNumber = random.randint(0, len(questions)-1)
+        # if length of previous questions is 0, then place
+        randomQuestion = questions[randomNumber]
+        # function recursive if previous question == random question and id of random questions less than all of questions
+        for previousQuestion in previousQuestions:
+            if previousQuestion == randomQuestion['id'] and randomQuestion['id'] < len(questions):
+                random_question(questions, previousQuestions)
+        return [randomQuestion, totalQuestions]
+
+    @app.route('/quizzes', methods=['POST'])
+    def getNextQuestion():
+        
+        body = request.get_json()
+        previousQuestions = body.get('previous_questions', None)
+        quizCategory = body.get('quiz_category', None)
+        if quizCategory is None:
+            abort(404)
+        categoryNumber = quizCategory['id']
+        question = random_question(categoryNumber, previousQuestions)
+
+        return jsonify({
+            'success' : True,
+            'question' : question[0],
+            'previous' : previousQuestions,
+            'total_questions' : question[1]
+        })
+
 
     """
     @TODO:
