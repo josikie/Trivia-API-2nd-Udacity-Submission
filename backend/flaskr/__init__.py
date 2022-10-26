@@ -219,7 +219,6 @@ def create_app(test_config=None):
 
         # get random number
         randomNumber = random.randint(1, len(questions))
-        # if length of previous questions is 0, then place
         # do function recursive if random question is in previous questions
         for previousQuestion in previousQuestions:
             if previousQuestion == randomNumber and randomNumber-1 <= len(questions):
