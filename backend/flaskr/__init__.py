@@ -1,5 +1,6 @@
 import json
 import os
+from unicodedata import category
 from unittest import result
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy 
@@ -43,7 +44,19 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests
     for all available categories.
     """
-
+    @app.route('/categories')
+    def getCategories():
+        categories = {}
+        results = Category.query.all()
+        if results is None:
+            abort(404)
+        for category in results:
+            categories[category.id] = category.type
+            
+        return jsonify({
+            'success' : True,
+            'categories' : categories
+        })
     """
     @TODO:
     Create an endpoint to handle GET requests for questions,
@@ -105,7 +118,6 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
-
     """
     @TODO:
     Create a POST endpoint to get questions based on a search term.
@@ -117,22 +129,39 @@ def create_app(test_config=None):
     Try using the word "title" to start.
     """
     @app.route('/questions', methods=['POST'])
-    def searchQuestions():
-        try:
-            # take title
-            title = request.get_json()['searchTerm']
-            questions = []
-            # filter all question with that title
-            filteredQuestions = Question.query.filter(Question.question.ilike('%' + title + '%')).all()
-            # return 'success', 'questions', 'total_questions', 'current_category'
-            return jsonify({
-                'success' : True,
-                'questions' : [filteredQuestion.format() for filteredQuestion in filteredQuestions],
-                'total_questions' : len(filteredQuestions),
-                'current_category' : '',
-            })
-        except:
+    def createOrSearchQuestions():
+        body = request.get_json()
+        questionId = body.get('id', None)
+        if questionId:
             abort(400)
+        theQuestion = body.get('question', None)
+        questionAnswer = body.get('answer', None)
+        questionDifficulty = body.get('difficulty', None)
+        questionCategory = body.get('category', None)
+        searchTerm = body.get('searchTerm', None)
+        try:
+            if searchTerm:
+                # take title
+                title = searchTerm
+                # filter all question with that title
+                filteredQuestions = Question.query.filter(Question.question.ilike('%' + title + '%')).all()
+                # return 'success', 'questions', 'total_questions', 'current_category'
+                return jsonify({
+                    'success' : True,
+                    'questions' : [filteredQuestion.format() for filteredQuestion in filteredQuestions],
+                    'total_questions' : len(filteredQuestions),
+                    'current_category' : '',
+                })
+            elif questionCategory:
+                question = Question(question=theQuestion,answer=questionAnswer,category=questionCategory,difficulty=questionDifficulty)
+                question.insert()
+                return jsonify({
+                    'success' : True
+                })
+            else:
+                abort(422)
+        except:
+            abort(422)
     """
     @TODO:
     Create a GET endpoint to get questions based on category.

@@ -63,7 +63,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['current_category'], 3)
 
     def test_404_question_by_category(self):
-        req = self.client().get('/categories/455/questions')
+        req = self.client().get('/categories/4550044/questions')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 404)
@@ -90,14 +90,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data['questions']), 0)
         self.assertEqual(data['total_questions'], 0)
 
-    def test_400_questions_by_category(self):
-        req = self.client().post('/questions', json={'ss' : 'What'})
-        data = json.loads(req.data)
-
-        self.assertEqual(req.status_code, 400)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'bad request')
-
     # def test_delete_questions(self):
     #     req = self.client().delete('/questions/5')
     #     data = json.loads(req.data)
@@ -110,8 +102,45 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(req.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'unprocessable')
-    
 
+    def test_get_categories(self):
+        req = self.client().get('/categories')
+        data = json.loads(req.data)
+
+        self.assertEqual(req.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['categories']))
+
+    def test_404_categories(self):
+        req = self.client().get('/categoriess')
+        data = json.loads(req.data)
+
+        self.assertEqual(req.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
+    def test_create_question(self):
+        req = self.client().post('/questions', json={'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
+        data = json.loads(req.data)
+
+        self.assertEqual(req.status_code, 200)
+        self.assertEqual(data['success'], True)
+        
+    def test_422_create_question(self):
+        req = self.client().post('/questions', json={'id' : 23, 'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
+        data = json.loads(req.status_code)
+
+        self.assertEqual(req.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+
+    def test_422_create_question(self):
+        req = self.client().post('/questions', json={'answer' : 'Maya Angelou', 'difficulty' : 2})
+        data = json.loads(req.data)
+
+        self.assertEqual(req.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
