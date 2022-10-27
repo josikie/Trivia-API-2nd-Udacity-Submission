@@ -1,6 +1,7 @@
 import json
 from multiprocessing import current_process
 import os
+from unicodedata import category
 from unittest import result
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
@@ -101,6 +102,7 @@ def create_app(test_config=None):
         try:
             question = Question.query.get(question_id)
             question.delete()
+
             return jsonify({
                 'success' : True
             })
@@ -132,7 +134,7 @@ def create_app(test_config=None):
     def createOrSearchQuestions():
         body = request.get_json()
         questionId = body.get('id', None)
-        
+
         if questionId:
             abort(400)
 
@@ -140,11 +142,6 @@ def create_app(test_config=None):
         questionAnswer = body.get('answer', None)
         questionDifficulty = body.get('difficulty', None)
         questionCategory = body.get('category', None)
-
-        if theQuestion == None or questionAnswer == None:
-            abort(422)
-        if theQuestion == '' or questionAnswer == '':
-            abort(422)
 
         searchTerm = body.get('searchTerm', None)
         try:
@@ -172,12 +169,16 @@ def create_app(test_config=None):
                     'total_questions' : len(filteredQuestions),
                     'current_category' : '',
                 })
-            elif questionCategory:
+            elif questionCategory and theQuestion and questionAnswer:
                 question = Question(question=theQuestion,answer=questionAnswer,category=questionCategory,difficulty=questionDifficulty)
                 question.insert()
+                
                 return jsonify({
                     'success' : True
                 })
+
+            else:
+                abort(422)
         except:
             abort(422)
     """

@@ -121,7 +121,7 @@ class QuestionView extends Component {
 
   questionAction = (id) => (action) => {
     if (action === 'DELETE') {
-      if (window.confirm('are you sure you want to delete the question?')) {
+      if (window.confirm('Are you sure you want to delete the question?\n\nNote: After you click one of the buttons, You will redirect to the main page. Don\'t worry if you feel something different, because the data appear different in the main page (There is noting wrong).')) {
         $.ajax({
           url: `/questions/${id}`, //TODO: update request URL
           type: 'DELETE',

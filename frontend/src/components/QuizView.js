@@ -14,7 +14,7 @@ class QuizView extends Component {
       currentQuestion: {},
       guess: '',
       forceEnd: false,
-      perplay: 0
+      totalQuestions: 0
     };
   }
 
@@ -67,8 +67,7 @@ class QuizView extends Component {
           currentQuestion: result.question,
           guess: '',
           forceEnd: result.question ? false : true,
-          perplay: result.total_questions
-          
+          totalQuestions: result.total_questions
         });
         return;
       },
@@ -97,7 +96,7 @@ class QuizView extends Component {
       currentQuestion: {},
       guess: '',
       forceEnd: false,
-      perplay: 0
+      totalQuestions: 0
     });
   };
 
@@ -172,7 +171,7 @@ class QuizView extends Component {
   }
 
   renderPlay() {
-    return this.state.previousQuestions.length === this.state.perplay ||
+    return this.state.previousQuestions.length === this.state.totalQuestions ||
       this.state.forceEnd ? (
       this.renderFinalScore()
     ) : this.state.showAnswer ? (
@@ -180,7 +179,8 @@ class QuizView extends Component {
     ) : (
       <div className='quiz-play-holder'>
         <div className='quiz-question'>
-          {this.state.currentQuestion.question}
+          <h5>{this.state.currentQuestion.question}</h5>
+          <small>Total Questions: {this.state.totalQuestions}</small>
         </div>
         <form onSubmit={this.submitGuess}>
           <input type='text' name='guess' onChange={this.handleChange} />
