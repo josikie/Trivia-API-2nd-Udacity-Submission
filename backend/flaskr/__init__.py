@@ -155,7 +155,7 @@ def create_app(test_config=None):
                     'success' : True,
                     'questions' : [filteredQuestion.format() for filteredQuestion in filteredQuestions],
                     'total_questions' : len(filteredQuestions),
-                    'current_category' : '',
+                    'current_category' : 'All',
                 })
             elif searchTerm == '':
                 # take title
