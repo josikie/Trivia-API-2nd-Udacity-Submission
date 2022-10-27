@@ -155,7 +155,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(req.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(len([data['question']]), 1)
-        self.assertTrue(data['total_questions'])
 
     def test_404_get_next_question(self):
         with self.app.app_context():

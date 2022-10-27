@@ -1,3 +1,4 @@
+from email.policy import default
 import os
 from sqlalchemy import Column, String, Integer, create_engine, ForeignKey
 from sqlalchemy.orm import relationship

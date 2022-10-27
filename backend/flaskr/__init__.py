@@ -45,17 +45,18 @@ def create_app(test_config=None):
     """
     @app.route('/categories')
     def getCategories():
-        categories = {}
-        results = Category.query.all()
-        if results is None:
+        try:
+            categories = {}
+            results = Category.query.all()
+            for category in results:
+                categories[category.id] = category.type
+                
+            return jsonify({
+                'success' : True,
+                'categories' : categories
+            })
+        except:
             abort(404)
-        for category in results:
-            categories[category.id] = category.type
-            
-        return jsonify({
-            'success' : True,
-            'categories' : categories
-        })
     """
     @TODO:
     Create an endpoint to handle GET requests for questions,
@@ -131,15 +132,35 @@ def create_app(test_config=None):
     def createOrSearchQuestions():
         body = request.get_json()
         questionId = body.get('id', None)
+        
         if questionId:
             abort(400)
+
         theQuestion = body.get('question', None)
         questionAnswer = body.get('answer', None)
         questionDifficulty = body.get('difficulty', None)
         questionCategory = body.get('category', None)
+
+        if theQuestion == None or questionAnswer == None:
+            abort(422)
+        if theQuestion == '' or questionAnswer == '':
+            abort(422)
+
         searchTerm = body.get('searchTerm', None)
         try:
             if searchTerm:
+                # take title
+                title = searchTerm
+                # filter all question with that title
+                filteredQuestions = Question.query.filter(Question.question.ilike('%' + title + '%')).all()
+                # return 'success', 'questions', 'total_questions', 'current_category'
+                return jsonify({
+                    'success' : True,
+                    'questions' : [filteredQuestion.format() for filteredQuestion in filteredQuestions],
+                    'total_questions' : len(filteredQuestions),
+                    'current_category' : '',
+                })
+            elif searchTerm == '':
                 # take title
                 title = searchTerm
                 # filter all question with that title
@@ -157,8 +178,6 @@ def create_app(test_config=None):
                 return jsonify({
                     'success' : True
                 })
-            else:
-                abort(422)
         except:
             abort(422)
     """
@@ -172,18 +191,19 @@ def create_app(test_config=None):
     @app.route('/categories/<int:category_id>/questions')
     def getQuestionsByCategory(category_id):
         # get specific category 
-        category = Category.query.filter_by(id=category_id).one_or_none()
-        if category is None:
+        try:
+            category = Category.query.filter_by(id=category_id).one_or_none()
+            # get all question's of that category
+            questions = category.questions
+            # return json object
+            return jsonify({
+                'success' : True,
+                'total_questions' : len(questions),
+                'current_category' : category_id,
+                'questions' : [question.format() for question in questions]
+            })
+        except:
             abort(404)
-        # get all question's of that category
-        questions = category.questions
-        # return json object
-        return jsonify({
-            'success' : True,
-            'total_questions' : len(questions),
-            'current_category' : category_id,
-            'questions' : [question.format() for question in questions]
-        })
     """
     @TODO:
     Create a POST endpoint to get questions to play the quiz.
@@ -197,51 +217,65 @@ def create_app(test_config=None):
     """
 
     def random_question(quizCategory, previousQuestions):
-        # if the category is 0, then fetch all questions in the database
+        allQuestions = None
+        firstQuestion = None
+        currentQuestion = None
+        # if quiz category equal to 0, then get all questions that is not in previous qestions
         if quizCategory == 0:
-            allQuestions = Question.query.order_by(Question.id).all()
-        # if the category is not 0, then fetch specific questions based on its category number in the database
+            allQuestions = Question.query.filter(Question.id.not_in(previousQuestions)).all()
+        # if previous questions equal to zero, then get first question prior to specific category
+        elif previousQuestions == 0:
+            firstQuestion = Question.query.filter(Question.category==quizCategory).first()
+            allQuestions = list(firstQuestion)
         else:
-            allQuestions = Question.query.order_by(Question.id).filter(Question.category==quizCategory).all()
+            allQuestions = Question.query.filter(Question.id.not_in(previousQuestions), Question.category==quizCategory).all()
         
-        # change the fetched data type to list
-        questions = [allQuestion.format() for allQuestion in allQuestions]
+        questions = [question.format() for question in allQuestions]
 
-        # initialize total questions
-        totalQuestions = 0
-        if quizCategory == 0:
-            totalQuestions = 5
-        else :
-            if len(questions) < 5:
-                totalQuestions = len(questions)
-            else:
-                totalQuestions = 5
+        randomMax = len(questions)
+        # get random question if randomMax more than zero
+        if randomMax > 0:
+            currentQuestion = questions[random.randint(0, randomMax-1)]
+        else:
+            currentQuestion = False
 
-        # get random number
-        randomNumber = random.randint(1, len(questions))
-        # do function recursive if random question is in previous questions
-        for previousQuestion in previousQuestions:
-            if previousQuestion == randomNumber and randomNumber-1 <= len(questions):
-                random_question(questions, previousQuestions)
-        randomQuestion = questions[randomNumber-1]
-        return [randomQuestion, totalQuestions]
+        return currentQuestion
 
     @app.route('/quizzes', methods=['POST'])
     def getNextQuestion():
-        
+        # get body request
         body = request.get_json()
         previousQuestions = body.get('previous_questions', None)
         quizCategory = body.get('quiz_category', None)
+        # if quiz category is none, then abort
         if quizCategory is None:
             abort(404)
+        # get the id of category
         categoryNumber = quizCategory['id']
+
+        total_questions = 0
+        # if category is all (0), set total_questions to 5
+        if categoryNumber == None:
+            total_questions = 5
+        else:
+            # get all questions based on its category
+            allQuestions = Question.query.filter(Question.category==categoryNumber).all()
+            listQuestions = [question.format() for question in allQuestions]
+            # if number of questions less than 5, then set total_questions to the total all questions
+            if len(listQuestions) < 5:
+                total_questions = len(listQuestions)
+            # if number of questions more than 5, then set total_questions to 5
+            else: 
+                total_questions = 5
+
+        # take a random question
         question = random_question(categoryNumber, previousQuestions)
 
         return jsonify({
             'success' : True,
-            'question' : question[0],
+            'question' : question,
             'previous' : previousQuestions,
-            'total_questions' : question[1]
+            'total_questions' : total_questions
         })
 
 
@@ -272,5 +306,13 @@ def create_app(test_config=None):
             'message' : 'unprocessable',
             'error' : 422
         }), 422
+
+    @app.errorhandler(500)
+    def internalError(error):
+        return jsonify({
+            'success': False,
+            'message': 'Internal Server Error',
+            'error' : 500
+        }), 500
     return app
 
