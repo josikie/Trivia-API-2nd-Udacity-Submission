@@ -349,7 +349,8 @@ Result:
 - Return: A json object with key `success` that contains boolean value, `questions` contains list of filtered questions, `total_questions` contains the total of filtered questions, `current_category` contains `All`.
 
 Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"searchTerm":"which"}'`
-\nResult:
+
+Result:
 ```json
 {
   "current_category": "All",
