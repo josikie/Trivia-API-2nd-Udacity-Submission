@@ -2,6 +2,8 @@
 
 Trivia API is a REST API build for trivia game (frontend in this project) but you can use it too for other applications. 
 
+All backend Code follows [PEP8 style guidelines](https://pep8.org/#introduction).
+
 ## Setting up the Backend
 
 I write the backend API using TDD paradigm. TDD is abbreviation of Test Driven Development, where I write test code first for the behaviour of endpoint, run the test code, watch it fails, write the endpoint code, run it again until my endpoint behaviour match and passed the test. After an endpoint passed the test, I continue to write another test code for another endpoint. The process continue over and over until all needed endpoints created. 
@@ -421,4 +423,7 @@ or
 ```bash
 python test_flaskr.py
 ```
+
+### Contribute
+If you want to make contributions, you can work in backend folder. Contributions example: adding new endpoints.
 
