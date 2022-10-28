@@ -49,7 +49,7 @@ pip install -r requirements.txt
 
 ### Set up the Database
 
-Go to main directory of project, run postgres with default user and database in postgres:
+Go to main directory of project, run postgres with default user and default database in postgres:
 
 ```bash
 psql postgres postgres
@@ -61,7 +61,7 @@ Create database trivia, trivia_test, and user mydb with this command (postgres c
 \i setup.sql
 ```
 
-Go to the backend directory. Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
+Go to the backend directory. From the `backend` folder in terminal populate the database using the `trivia.psql` file provided with run this command:
 
 ```bash
 psql -d trivia -U postgres -a -f trivia.psql
@@ -83,7 +83,7 @@ export FLASK_DEBUG=TRUE
 flask run
 ```
 
-Using FLASK_DEBUG=TRUE in debug mode. Everytime you make changes, you don't need to run `flask run` again to refresh it. Everytime you made error, it will help you by locate the error in the terminal. Don't use debug mode in production deployment.
+Using FLASK_DEBUG=TRUE in debug mode. Everytime you make changes, you don't need to run `flask run` again. Everytime you made error, it will help you by locate the error in the terminal. Don't use debug mode in production deployment.
 
 ## To Do Tasks
 
@@ -92,7 +92,7 @@ These are the files I edited in the backend:
 1. `backend/flaskr/__init__.py`
 2. `backend/test_flaskr.py`
 
-I'm expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. I completed the code by:
+I defined the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. I completed the code by:
 
 1. Use Flask-CORS to enable cross-domain requests and set response headers.
 2. Create an endpoint to handle `GET` requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
@@ -349,7 +349,7 @@ Result:
 - Return: A json object with key `success` that contains boolean value, `questions` contains list of filtered questions, `total_questions` contains the total of filtered questions, `current_category` contains `All`.
 
 Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"searchTerm":"which"}'`
-Result:
+\nResult:
 ```json
 {
   "current_category": "All",
@@ -396,7 +396,7 @@ Result:
 ```
 ## Testing
 
-I write the backend API using TDD paradigm. TDD is abbreviation of Test Driven Development, where I write test code first for the behaviour of endpoint, run the test code, watch it fails, write the endpoint code, run it again until my endpoint behaviour match and passed the test. After an endpoint passed the test, I continue to write another test code for another endpoint. The process continue over and over until all needed endpoints created. 
+I write the backend API using TDD paradigm. TDD is abbreviation of Test Driven Development, where I write test code first to define the behaviour of endpoint, run the test code, watch it fails, write the endpoint code, run it again until my endpoint behaviour match and passed the test. After an endpoint passed the test, I continue to write another test code for another endpoint. The process continue over and over until all needed endpoints created. 
 
 For support paradigm I use, I make two databases i.e trivia and trivia_test. So there are two sets of database configuration, one in backend/test_flaskr.py and one in backend/models.py
 
