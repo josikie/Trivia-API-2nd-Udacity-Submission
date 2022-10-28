@@ -139,7 +139,7 @@ There are six endpoints you can access to do something with data:
 
 Try in curl: `curl http://localhost:5000/api/categories`
 
-Result:
+Result and the structur of endpoint response:
 ```json
 {
   "categories": {
@@ -163,7 +163,7 @@ Result:
 
 Try in curl `curl http://localhost:5000/api/questions`
 
-Result:
+Result and the structur of endpoint response:
 ```json
 {
   "categories": {
@@ -260,7 +260,7 @@ Result:
 
 Try in curl: `curl -X POST http://localhost:5000/api/quizzes -H 'Content-Type: application/json' -d '{"previous_questions":[2],"quiz_category":{"id":2}}'`
 
-Result:
+Result and the structur of endpoint response:
 ```json
 {
   "previous": [
@@ -286,7 +286,7 @@ Result:
 
 Try in curl: `curl http://localhost:5000/api/categories/2/questions`
 
-Result:
+Result and the structur of endpoint response:
 ```json
 {
   "current_category": 2,
@@ -326,7 +326,7 @@ Result:
 
 Try in curl: `curl -X DELETE http://localhost:5000/api/questions/15`
 
-Result:
+Result and the structur of endpoint response:
 ```json
 {
   "success": true
@@ -341,7 +341,7 @@ Result:
 
 Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"question" : "Whose autobiography is entitled I Know Why the Caged Bird Sings?", "answer": "Maya Angelou", "difficulty":2, "category":4}'`
 
-Result: 
+Result and the structur of endpoint response: 
 ```json
 {
   "success": true
@@ -356,7 +356,7 @@ Result:
 
 Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"searchTerm":"which"}'`
 
-Result:
+Result and the structur of endpoint response:
 ```json
 {
   "current_category": "All",
