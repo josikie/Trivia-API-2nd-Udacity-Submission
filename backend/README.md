@@ -1,6 +1,6 @@
 # Backend - Trivia API
 
-Trivia API is a REST API build for trivia game (frontend in this project) but you can use it too.
+Trivia API is a REST API build for trivia game (frontend in this project) but you can use it too for other applications.
 
 ## Setting up the Backend
 

@@ -39,7 +39,7 @@ I pay special attention to what data the frontend is expecting from each API res
 2. `frontend/src/components/FormView.js`
 3. `frontend/src/components/QuizView.js`
 
-I practice the core skill of being able to read, understand code, and structur simple plan to follow to build out the endpoints of my backend API
+I practice the core skill of read, understand code, and structur simple plan to follow to build out the endpoints of my backend API
 
 > View the [Frontend README](./frontend/README.md) for more details.
 
