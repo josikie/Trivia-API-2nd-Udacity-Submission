@@ -1,6 +1,6 @@
 # Backend - Trivia API
 
-Trivia API is a REST API build for trivia game (frontend in this project) but you can use it too for other applications.
+Trivia API is a REST API build for trivia game (frontend in this project) but you can use it too for other applications. 
 
 ## Setting up the Backend
 
@@ -104,29 +104,296 @@ I'm expected to define the endpoint and response data. The frontend will be a pl
 8. Create a `POST` endpoint to get questions to play the quiz. This endpoint should take a category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
 9. Create error handlers for all expected errors including 400, 404, 422, and 500.
 
-## Documenting your Endpoints
+## API Reference
 
-You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
+Our API is a REST API. The API can receive json object body request, search parameters, and integer parameters for pagination. The return response from the server is a json object. You can use this API in the local environment, I don't host it online.
 
-### Documentation Example
+### Getting Started
 
-`GET '/api/v1.0/categories'`
+- Base URL : For now, this API can only run locally and is not hosted as base URL. Hosted at the default localhost + /API, `http://localhost:5000/api`.
 
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
+### Error Handling
+There are four errors handler for four errors. The errors returned json object in the following format:
 
 ```json
 {
-  "1": "Science",
-  "2": "Art",
-  "3": "Geography",
-  "4": "History",
-  "5": "Entertainment",
-  "6": "Sports"
+  'success' : False,
+  'message' : 'resource not found',
+  'error' : 404
 }
 ```
 
+These are three errors type when requests fail:
+- 400: bad request
+- 404: resource not found
+- 422: unprocessable
+
+### Endpoints
+There are six endpoints you can access to do something with data:
+
+`GET '/api/categories'`
+
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Request Arguments: None
+- Return: A json object with key `success` contains boolean value and, `categories` contains an object of `id: category_string` key: value pairs.
+
+Try in curl: `curl http://localhost:5000/api/categories`
+Result:
+```json
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true
+}
+```
+
+`GET '/api/questions'`
+
+- Fetches all questions, paginated by 10 books per page.
+- Request Parameters: default is '/1', or specify the page number by other number.
+- Request Arguments: None
+- Return: A json object with key `success` contains boolean values, `questions` contains list of questions, `total_questions` contains total of all questions in the database, `categories` contains an object of `id: category_string` key: value pairs, and `current_category` contains ''.
+
+Try in curl `curl http://localhost:5000/api/questions`
+Result:
+```json
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": "",
+  "questions": [
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    },
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    },
+    {
+      "answer": "One",
+      "category": 2,
+      "difficulty": 4,
+      "id": 18,
+      "question": "How many paintings did Van Gogh sell in his lifetime?"
+    }
+  ],
+  "success": true,
+  "total_questions": 15
+}
+```
+
+`POST 'api/quizzes'`
+
+- Fetches next quizz by its category.
+- Request Arguments: a json object request with key `previous_questions` contains the list of previous question ids, and the `quiz_category` contains the category for next quiz.
+- Return: A json object with key `success` contains boolean value, `question` contains the selected question for next question, `previous` contains list of the previous question ids, `total_questions` contains total questions of this quiz session.
+
+Try in curl: `curl -X POST http://localhost:5000/api/quizzes -H 'Content-Type: application/json' -d '{"previous_questions":[2],"quiz_category":{"id":2}}'`
+Result:
+```json
+{
+  "previous": [
+    2
+  ],
+  "question": {
+    "answer": "One",
+    "category": 2,
+    "difficulty": 4,
+    "id": 18,
+    "question": "How many paintings did Van Gogh sell in his lifetime?"
+  },
+  "success": true,
+  "total_questions": 3
+}
+```
+
+`GET '/api/categories/<int:category_id/questions'`
+
+- Fetches all questions based on its category.
+- Request Parameters: the number category in integer.
+- Return: A json object with key `success` contains boolean value, `total_questions` contains total questions of the specific category, `current_category` contains the current_category id, `questions` contains list of questions based on its category.
+
+Try in curl: `curl http://localhost:5000/api/categories/2/questions`
+Result:
+```json
+{
+  "current_category": 2,
+  "questions": [
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    },
+    {
+      "answer": "One",
+      "category": 2,
+      "difficulty": 4,
+      "id": 18,
+      "question": "How many paintings did Van Gogh sell in his lifetime?"
+    },
+    {
+      "answer": "Jackson Pollock",
+      "category": 2,
+      "difficulty": 2,
+      "id": 19,
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+    }
+  ],
+  "success": true,
+  "total_questions": 3
+}
+```
+
+`DELETE 'api/questions/<int:question_id>'`
+
+- Deleted specific question.
+- Request Parameters: question id.
+- Return: A json object with key `success` contains boolean value.
+
+Try in curl: `curl -X DELETE http://localhost:5000/api/questions/15`
+Result:
+```json
+{
+  "success": true
+}
+```
+
+`POST '/api/questions'`
+
+- Create a new question.
+- Request arguments: A json object with key `question` contains a question, `answer` contains the answer of the question, `difficulty` contains the level of the difficulty (range 1 - 5), `category` contains category of the question (it's a number, check categories endpoint to know what number what category).
+- Return: A json object with key `success` contains boolean value.
+
+Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"question" : "Whose autobiography is entitled I Know Why the Caged Bird Sings?", "answer": "Maya Angelou", "difficulty":2, "category":4}'`
+Result: 
+```json
+{
+  "success": true
+}
+```
+
+`POST '/api/questions'`
+
+- Search Questions with search term.
+- Request Arguments: A json object with key `searchTerm` contains the word or search term user type.
+- Return: A json object with key `success` that contains boolean value, `questions` contains list of filtered questions, `total_questions` contains the total of filtered questions, `current_category` contains `All`.
+
+Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"searchTerm":"which"}'`
+Result:
+```json
+{
+  "current_category": "All",
+  "questions": [
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    },
+    {
+      "answer": "Jackson Pollock",
+      "category": 2,
+      "difficulty": 2,
+      "id": 19,
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+    },
+    {
+      "answer": "Scarab",
+      "category": 4,
+      "difficulty": 4,
+      "id": 23,
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+    }
+  ],
+  "success": true,
+  "total_questions": 5
+}
+```
 ## Testing
 
 I write the backend API using TDD paradigm. TDD is abbreviation of Test Driven Development, where I write test code first for the behaviour of endpoint, run the test code, watch it fails, write the endpoint code, run it again until my endpoint behaviour match and passed the test. After an endpoint passed the test, I continue to write another test code for another endpoint. The process continue over and over until all needed endpoints created. 

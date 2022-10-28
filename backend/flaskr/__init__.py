@@ -28,7 +28,7 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
-    cors = CORS(app, resources={f"/*" : {'origins' : '*'}})
+    cors = CORS(app, resources={f"/api/*" : {'origins' : '*'}})
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
@@ -39,12 +39,30 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE,OPTIONS')
         return response
+
+    # endpoint for base url
+    @app.route('/api')
+    def api_endpoint():
+        message = ['This endpoint without data, to do something or access the endpoint use this urls:', {
+            'Get Categories' : 'GET /api/categories',
+            'Get Questions' : 'GET /api/questions',
+            'Delete Questions' : 'DELETE /api/questions/<int:question_id>',
+            'Create or Search Questions' : 'POST /api/questions',
+            'Get Questions by Category' : 'GET /api/categories/<int:category_id>/questions',
+            'Get Next Quiz' : 'POST /api/quizzes'
+        }]
+
+        return jsonify({
+            'success' : True,
+            'message' : message
+        })
+
     """
     @TODO:
     Create an endpoint to handle GET requests
     for all available categories.
     """
-    @app.route('/categories')
+    @app.route('/api/categories')
     def getCategories():
         try:
             categories = {}
@@ -70,7 +88,7 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
-    @app.route('/questions')
+    @app.route('/api/questions')
     def getPaginatedQuestions():
         questions = Question.query.order_by(Question.id).all()
         paginated = paginated_questions(request, questions)
@@ -97,7 +115,7 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
-    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    @app.route('/api/questions/<int:question_id>', methods=['DELETE'])
     def deleteQuestion(question_id):
         try:
             question = Question.query.get(question_id)
@@ -130,7 +148,7 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-    @app.route('/questions', methods=['POST'])
+    @app.route('/api/questions', methods=['POST'])
     def createOrSearchQuestions():
         body = request.get_json()
         questionId = body.get('id', None)
@@ -188,7 +206,7 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
-    @app.route('/categories/<int:category_id>/questions')
+    @app.route('/api/categories/<int:category_id>/questions')
     def getQuestionsByCategory(category_id):
         # get specific category 
         try:
@@ -241,7 +259,7 @@ def create_app(test_config=None):
 
         return currentQuestion
 
-    @app.route('/quizzes', methods=['POST'])
+    @app.route('/api/quizzes', methods=['POST'])
     def getNextQuestion():
         # get body request
         body = request.get_json()
@@ -255,7 +273,7 @@ def create_app(test_config=None):
 
         total_questions = 0
         # if category is all (0), set total_questions to 5
-        if categoryNumber == None:
+        if categoryNumber == 0:
             total_questions = 5
         else:
             # get all questions based on its category

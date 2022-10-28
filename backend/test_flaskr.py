@@ -31,12 +31,19 @@ class TriviaTestCase(unittest.TestCase):
         """Executed after reach test"""
         pass
 
+    def test_base_url(self):
+        req = self.client().get('/api')
+        data = json.loads(req.data)
+
+        self.assertEqual(req.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['message']))
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
     def test_paginate_questions(self):
-        req = self.client().get('/questions')
+        req = self.client().get('/api/questions')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 200)
@@ -47,7 +54,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['categories']))
 
     def test_404_paginate_questions(self):
-        req = self.client().get('/questions?page=234040')
+        req = self.client().get('/api/questions?page=234040')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 404)
@@ -55,7 +62,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     def test_questions_by_category(self):
-        req = self.client().get('/categories/3/questions')
+        req = self.client().get('/api/categories/3/questions')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 200)
@@ -64,7 +71,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['current_category'], 3)
 
     def test_404_question_by_category(self):
-        req = self.client().get('/categories/4550044/questions')
+        req = self.client().get('/api/categories/4550044/questions')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 404)
@@ -72,7 +79,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
     
     def test_search_question(self):
-        req = self.client().post('/questions', json={'searchTerm' : 'What'})
+        req = self.client().post('/api/questions', json={'searchTerm' : 'What'})
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 200)
@@ -82,7 +89,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['current_category'], 'All')
 
     def test_200_search_questions_by_category(self):
-        req = self.client().post('/questions', json={'searchTerm' : 'owodnjendjenw'})
+        req = self.client().post('/api/questions', json={'searchTerm' : 'owodnjendjenw'})
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 200)
@@ -92,20 +99,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['total_questions'], 0)
 
     # def test_delete_questions(self):
-    #     req = self.client().delete('/questions/19')
+    #     req = self.client().delete('/api/questions/20')
     #     data = json.loads(req.data)
     #     self.assertEqual(req.status_code, 200)
     #     self.assertEqual(data['success'], True)
     
     def test_422_delete_questions(self):
-        req = self.client().delete('/questions/1')
+        req = self.client().delete('/api/questions/0')
         data = json.loads(req.data)
         self.assertEqual(req.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'unprocessable')
 
     def test_get_categories(self):
-        req = self.client().get('/categories')
+        req = self.client().get('/api/categories')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 200)
@@ -113,7 +120,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['categories']))
 
     def test_404_categories(self):
-        req = self.client().get('/categoriess')
+        req = self.client().get('/api/categoriess')
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 404)
@@ -121,14 +128,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     def test_create_question(self):
-        req = self.client().post('/questions', json={'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
+        req = self.client().post('/api/questions', json={'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 200)
         self.assertEqual(data['success'], True)
         
     def test_422_create_question(self):
-        req = self.client().post('/questions', json={'id' : 23, 'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
+        req = self.client().post('/api/questions', json={'id' : 23, 'question' : 'Whose autobiography is entitled \'I Know Why the Caged Bird Sings\'?', 'answer' : 'Maya Angelou', 'difficulty' : 2, 'category' : 4})
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 422)
@@ -136,7 +143,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'unprocessable')
 
     def test_422_create_question(self):
-        req = self.client().post('/questions', json={'answer' : 'Maya Angelou', 'difficulty' : 2})
+        req = self.client().post('/api/questions', json={'answer' : 'Maya Angelou', 'difficulty' : 2})
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 422)
@@ -147,7 +154,7 @@ class TriviaTestCase(unittest.TestCase):
         with self.app.app_context():
             previous_questions = Question.query.order_by(Question.id).filter(Question.category==2).all()
             questions = [previous_question.id for previous_question in previous_questions]
-        req = self.client().post('/quizzes', json={'previous_questions' : questions[0:1], 'quiz_category' : {'id' : 2}})
+        req = self.client().post('/api/quizzes', json={'previous_questions' : questions[0:1], 'quiz_category' : {'id' : 2}})
         data = json.loads(req.data)
         print(data['question'])
         print(data['previous'])
@@ -160,7 +167,7 @@ class TriviaTestCase(unittest.TestCase):
         with self.app.app_context():
             previous_questions = Question.query.order_by(Question.id).filter(Question.category==2).all()
             questions = [previous_question.id for previous_question in previous_questions]
-        req = self.client().post('/quizzes', json={'previous_questions' : questions[0:1]})
+        req = self.client().post('/api/quizzes', json={'previous_questions' : questions[0:1]})
         data = json.loads(req.data)
 
         self.assertEqual(req.status_code, 404)
@@ -172,7 +179,7 @@ class TriviaTestCase(unittest.TestCase):
         with self.app.app_context():
             previous_questions = Question.query.order_by(Question.id).all()
             questions = [previous_question.id for previous_question in previous_questions]
-        req = self.client().post('/quizzes', json={'previous_questions' : questions[0:2], 'quiz_category' : {'id' : 0}})
+        req = self.client().post('/api/quizzes', json={'previous_questions' : questions[0:2], 'quiz_category' : {'id' : 0}})
         data = json.loads(req.data)
         print(f'\n{data}')
 
