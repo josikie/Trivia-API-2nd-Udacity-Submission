@@ -43,6 +43,9 @@ I practice the core skill of being able to read, understand code, and structur s
 
 > View the [Frontend README](./frontend/README.md) for more details.
 
+### IDE and Other Tools
+I use Visual Studio code for the IDE, and Git Bash to run command lines. Download [Visual Code](https://code.visualstudio.com/download) and [Git Bash](https://git-scm.com/downloads)
+
 ### Authors
 1. Udacity's Team (code starter and frontend)
 2. Josi Kie (backend API and a little changes in frontend logic)
