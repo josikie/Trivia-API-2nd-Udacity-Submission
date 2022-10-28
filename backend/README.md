@@ -89,7 +89,7 @@ Using FLASK_DEBUG=TRUE in debug mode. Everytime you make changes, you don't need
 
 ## API Reference
 
-Our API is a REST API. The API can receive json object body request, search parameters, and integer parameters for pagination. The return response from the server is a json object. You can use this API in the local environment, I don't host it online.
+Our API is a REST API. The API can receive json object body request, search parameters, and integer parameters for pagination. The return response from the server is a json object. You can use this API in the local environment, We don't host it online.
 
 ### Getting Started
 
