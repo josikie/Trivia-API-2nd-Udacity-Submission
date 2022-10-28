@@ -14,7 +14,7 @@ class QuizView extends Component {
       currentQuestion: {},
       guess: '',
       forceEnd: false,
-      totalQuestions: 0
+      totalQuestions: null
     };
   }
 
@@ -62,12 +62,12 @@ class QuizView extends Component {
       crossDomain: true,
       success: (result) => {
         this.setState({
+          totalQuestions: result.total_questions,
           showAnswer: false,
           previousQuestions: previousQuestions,
           currentQuestion: result.question,
           guess: '',
-          forceEnd: result.question ? false : true,
-          totalQuestions: result.total_questions
+          forceEnd: result.question ? false : true
         });
         return;
       },
@@ -96,7 +96,7 @@ class QuizView extends Component {
       currentQuestion: {},
       guess: '',
       forceEnd: false,
-      totalQuestions: 0
+      totalQuestions: null
     });
   };
 
@@ -176,7 +176,7 @@ class QuizView extends Component {
       this.renderFinalScore()
     ) : this.state.showAnswer ? (
       this.renderCorrectAnswer()
-    ) : (
+    ) : this.state.totalQuestions !== null ? (
       <div className='quiz-play-holder'>
         <div className='quiz-question'>
           <h5>{this.state.currentQuestion.question}</h5>
@@ -191,7 +191,9 @@ class QuizView extends Component {
           />
         </form>
       </div>
-    );
+    ) : (setTimeout(() => {
+      
+    }, "1"));
   }
 
   render() {

@@ -11,13 +11,15 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+
 def paginated_questions(request, questions):
-        page = request.args.get("page", 1, type=int)
-        start = (page - 1) * QUESTIONS_PER_PAGE
-        end = start + QUESTIONS_PER_PAGE
-        thequestions = [question.format() for question in questions]
-        current_questions = thequestions[start:end]
-        return current_questions
+    page = request.args.get("page", 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+    thequestions = [question.format() for question in questions]
+    current_questions = thequestions[start:end]
+    return current_questions
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -26,9 +28,10 @@ def create_app(test_config=None):
         setup_db(app)
 
     """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+    @TODO: Set up CORS. Allow '*' for origins.
+    Delete the sample route after completing the TODOs
     """
-    cors = CORS(app, resources={f"/api/*" : {'origins' : '*'}})
+    cors = CORS(app, resources={f"/api/*": {'origins': '*'}})
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
@@ -44,17 +47,16 @@ def create_app(test_config=None):
     @app.route('/api')
     def api_endpoint():
         message = ['This endpoint without data, to do something or access the endpoint use this urls:', {
-            'Get Categories' : 'GET /api/categories',
-            'Get Questions' : 'GET /api/questions',
-            'Delete Questions' : 'DELETE /api/questions/<int:question_id>',
-            'Create or Search Questions' : 'POST /api/questions',
-            'Get Questions by Category' : 'GET /api/categories/<int:category_id>/questions',
-            'Get Next Quiz' : 'POST /api/quizzes'
+            'Get Categories': 'GET /api/categories',
+            'Get Questions': 'GET /api/questions',
+            'Delete Questions': 'DELETE /api/questions/<int:question_id>',
+            'Create or Search Questions': 'POST /api/questions',
+            'Get Questions by Category': 'GET /api/categories/<int:category_id>/questions',
+            'Get Next Quiz': 'POST /api/quizzes'
         }]
-
         return jsonify({
-            'success' : True,
-            'message' : message
+            'success': True,
+            'message': message
         })
 
     """
@@ -64,18 +66,14 @@ def create_app(test_config=None):
     """
     @app.route('/api/categories')
     def getCategories():
-        try:
-            categories = {}
-            results = Category.query.all()
-            for category in results:
-                categories[category.id] = category.type
-                
-            return jsonify({
-                'success' : True,
-                'categories' : categories
-            })
-        except:
-            abort(404)
+        categories = {}
+        results = Category.query.all()
+        for category in results:
+            categories[category.id] = category.type
+        return jsonify({
+            'success': True,
+            'categories': categories
+        })
     """
     @TODO:
     Create an endpoint to handle GET requests for questions,
@@ -85,7 +83,8 @@ def create_app(test_config=None):
 
     TEST: At this point, when you start the application
     you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
+    ten questions per page and pagination at the bottom 
+    of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
     @app.route('/api/questions')
@@ -101,19 +100,20 @@ def create_app(test_config=None):
             results[category.id] = category.type
 
         return jsonify({
-            'success' : True,
-            'questions' : paginated,
-            'total_questions' : len(Question.query.all()),
-            'categories' : results,
-            'current_category' : '',
+            'success': True,
+            'questions': paginated,
+            'total_questions': len(Question.query.all()),
+            'categories': results,
+            'current_category': '',
         })    
 
     """
     @TODO:
     Create an endpoint to DELETE question using a question ID.
 
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page.
+    TEST: When you click the trash icon next to a question, 
+    the question will be removed. This removal will persist 
+    in the database and when you refresh the page.
     """
     @app.route('/api/questions/<int:question_id>', methods=['DELETE'])
     def deleteQuestion(question_id):
@@ -122,7 +122,7 @@ def create_app(test_config=None):
             question.delete()
 
             return jsonify({
-                'success' : True
+                'success': True
             })
         except:
             abort(422)
@@ -135,8 +135,8 @@ def create_app(test_config=None):
     category, and difficulty score.
 
     TEST: When you submit a question on the "Add" tab,
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.
+    the form will clear and the question will appear 
+    at the end of the last page of the questions list in the "List" tab.
     """
     """
     @TODO:
@@ -170,10 +170,10 @@ def create_app(test_config=None):
                 filteredQuestions = Question.query.filter(Question.question.ilike('%' + title + '%')).all()
                 # return 'success', 'questions', 'total_questions', 'current_category'
                 return jsonify({
-                    'success' : True,
-                    'questions' : [filteredQuestion.format() for filteredQuestion in filteredQuestions],
-                    'total_questions' : len(filteredQuestions),
-                    'current_category' : 'All',
+                    'success': True,
+                    'questions': [filteredQuestion.format() for filteredQuestion in filteredQuestions],
+                    'total_questions': len(filteredQuestions),
+                    'current_category': 'All',
                 })
             elif searchTerm == '':
                 # take title
@@ -182,17 +182,17 @@ def create_app(test_config=None):
                 filteredQuestions = Question.query.filter(Question.question.ilike('%' + title + '%')).all()
                 # return 'success', 'questions', 'total_questions', 'current_category'
                 return jsonify({
-                    'success' : True,
-                    'questions' : [filteredQuestion.format() for filteredQuestion in filteredQuestions],
-                    'total_questions' : len(filteredQuestions),
-                    'current_category' : '',
+                    'success': True,
+                    'questions': [filteredQuestion.format() for filteredQuestion in filteredQuestions],
+                    'total_questions': len(filteredQuestions),
+                    'current_category': '',
                 })
             elif questionCategory and theQuestion and questionAnswer:
                 question = Question(question=theQuestion,answer=questionAnswer,category=questionCategory,difficulty=questionDifficulty)
                 question.insert()
                 
                 return jsonify({
-                    'success' : True
+                    'success': True
                 })
             else:
                 abort(422)
@@ -215,10 +215,10 @@ def create_app(test_config=None):
             questions = category.questions
             # return json object
             return jsonify({
-                'success' : True,
-                'total_questions' : len(questions),
-                'current_category' : category_id,
-                'questions' : [question.format() for question in questions]
+                'success': True,
+                'total_questions': len(questions),
+                'current_category': category_id,
+                'questions': [question.format() for question in questions]
             })
         except:
             abort(404)
@@ -240,13 +240,13 @@ def create_app(test_config=None):
         currentQuestion = None
         # if quiz category equal to 0, then get all questions that is not in previous qestions
         if quizCategory == 0:
-            allQuestions = Question.query.filter(Question.id.not_in(previousQuestions)).all()
+            allQuestions = Question.query.filter(Question.id.notin_(previousQuestions)).all()
         # if previous questions equal to zero, then get first question prior to specific category
         elif previousQuestions == 0:
             firstQuestion = Question.query.filter(Question.category==quizCategory).first()
             allQuestions = list(firstQuestion)
         else:
-            allQuestions = Question.query.filter(Question.id.not_in(previousQuestions), Question.category==quizCategory).all()
+            allQuestions = Question.query.filter(Question.id.notin_(previousQuestions), Question.category==quizCategory).all()
         
         questions = [question.format() for question in allQuestions]
 
@@ -271,11 +271,9 @@ def create_app(test_config=None):
         # get the id of category
         categoryNumber = quizCategory['id']
 
-        total_questions = 0
+        total_questions = 5
         # if category is all (0), set total_questions to 5
-        if categoryNumber == 0:
-            total_questions = 5
-        else:
+        if categoryNumber != 0:
             # get all questions based on its category
             allQuestions = Question.query.filter(Question.category==categoryNumber).all()
             listQuestions = [question.format() for question in allQuestions]
@@ -290,10 +288,10 @@ def create_app(test_config=None):
         question = random_question(categoryNumber, previousQuestions)
 
         return jsonify({
-            'success' : True,
-            'question' : question,
-            'previous' : previousQuestions,
-            'total_questions' : total_questions
+            'success': True,
+            'question': question,
+            'previous': previousQuestions,
+            'total_questions': total_questions
         })
 
 
@@ -305,24 +303,25 @@ def create_app(test_config=None):
     @app.errorhandler(400)
     def badRequest(error):
         return jsonify({
-            'success' : False,
-            'message' : 'bad request',
-            'error' : 400
+            'success': False,
+            'message': 'bad request',
+            'error': 400
         }), 400
+        
     @app.errorhandler(404)
     def notFound(error):
         return jsonify({
-            'success' : False,
-            'message' : 'resource not found',
-            'error' : 404
+            'success': False,
+            'message': 'resource not found',
+            'error': 404
         }), 404
 
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
-            'success' : False,
-            'message' : 'unprocessable',
-            'error' : 422
+            'success': False,
+            'message': 'unprocessable',
+            'error': 422
         }), 422
 
     @app.errorhandler(500)
@@ -330,7 +329,6 @@ def create_app(test_config=None):
         return jsonify({
             'success': False,
             'message': 'Internal Server Error',
-            'error' : 500
+            'error': 500
         }), 500
     return app
-

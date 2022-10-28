@@ -51,6 +51,14 @@ pip install -r requirements.txt
 
 ### Set up the Database
 
+In the backend directory, make file config.py. config.py contains your configuration for host, user, and password. Example of config.py:
+`
+DB_HOST="localhost:5432"
+DB_USER="yourdb"
+DB_PASSWORD="yourpassword"
+`
+Configure setup.sql in the main directory with match database user and password that you set in config.py.
+
 Go to main directory of project, run postgres with default user and default database in postgres:
 
 ```bash

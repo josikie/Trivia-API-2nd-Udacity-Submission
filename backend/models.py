@@ -4,9 +4,10 @@ from sqlalchemy import Column, String, Integer, create_engine, ForeignKey
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 import json
+from config import DB_PASSWORD, DB_HOST, DB_USER
 
 database_name = 'trivia'
-database_path = 'postgresql://{}:{}@{}/{}'.format('mydb','mydb','localhost:5432', database_name)
+database_path = 'postgresql://{}:{}@{}/{}'.format(DB_USER, DB_PASSWORD,DB_HOST, database_name)
 
 db = SQLAlchemy()
 
