@@ -138,6 +138,7 @@ There are six endpoints you can access to do something with data:
 - Return: A json object with key `success` contains boolean value and, `categories` contains an object of `id: category_string` key: value pairs.
 
 Try in curl: `curl http://localhost:5000/api/categories`
+
 Result:
 ```json
 {
@@ -161,6 +162,7 @@ Result:
 - Return: A json object with key `success` contains boolean values, `questions` contains list of questions, `total_questions` contains total of all questions in the database, `categories` contains an object of `id: category_string` key: value pairs, and `current_category` contains ''.
 
 Try in curl `curl http://localhost:5000/api/questions`
+
 Result:
 ```json
 {
@@ -257,6 +259,7 @@ Result:
 - Return: A json object with key `success` contains boolean value, `question` contains the selected question for next question, `previous` contains list of the previous question ids, `total_questions` contains total questions of this quiz session.
 
 Try in curl: `curl -X POST http://localhost:5000/api/quizzes -H 'Content-Type: application/json' -d '{"previous_questions":[2],"quiz_category":{"id":2}}'`
+
 Result:
 ```json
 {
@@ -282,6 +285,7 @@ Result:
 - Return: A json object with key `success` contains boolean value, `total_questions` contains total questions of the specific category, `current_category` contains the current_category id, `questions` contains list of questions based on its category.
 
 Try in curl: `curl http://localhost:5000/api/categories/2/questions`
+
 Result:
 ```json
 {
@@ -321,6 +325,7 @@ Result:
 - Return: A json object with key `success` contains boolean value.
 
 Try in curl: `curl -X DELETE http://localhost:5000/api/questions/15`
+
 Result:
 ```json
 {
@@ -335,6 +340,7 @@ Result:
 - Return: A json object with key `success` contains boolean value.
 
 Try in curl: `curl -X POST http://localhost:5000/api/questions -H 'Content-Type: application/json' -d '{"question" : "Whose autobiography is entitled I Know Why the Caged Bird Sings?", "answer": "Maya Angelou", "difficulty":2, "category":4}'`
+
 Result: 
 ```json
 {
