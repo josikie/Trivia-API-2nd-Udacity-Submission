@@ -51,7 +51,7 @@ pip install -r requirements.txt
 
 ### Set up the Database
 
-In the backend directory, make file config.py. config.py contains your configuration for host, user, and password. Example of config.py:
+In the backend directory, open config.py, set config.py with database host, user, and password. Example of config.py:
 ```SQL
 DB_HOST="localhost:5432"
 DB_USER="yourdb"
