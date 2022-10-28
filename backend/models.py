@@ -1,10 +1,15 @@
-from email.policy import default
 import os
 from sqlalchemy import Column, String, Integer, create_engine, ForeignKey
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 import json
-from config import DB_PASSWORD, DB_HOST, DB_USER
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DB_HOST = os.environ.get("DB_HOST")
 
 database_name = 'trivia'
 database_path = 'postgresql://{}:{}@{}/{}'.format(DB_USER, DB_PASSWORD,DB_HOST, database_name)

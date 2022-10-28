@@ -26,6 +26,15 @@ Go to the backend directory, and create virtual environment (pip usually automat
 ```bash
 python3 -m virutalenv env
 ```
+Install CORS and dotenv in the local environment:
+
+```bash
+pip3 install flask-cors
+```
+
+```bash
+pip3 install python-dotenv
+```
 
 Run project in virutal environment:
 
@@ -51,7 +60,7 @@ pip install -r requirements.txt
 
 ### Set up the Database
 
-In the backend directory, open config.py, set config.py with database host, user, and password. Example of config.py:
+In the backend directory, create .env file, set variabel database host (DB_HOST), user(DB_USER), and password(DB_PASSWORD) in .env file. Example of config.py:
 ```SQL
 DB_HOST="localhost:5432"
 DB_USER="yourdb"

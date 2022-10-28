@@ -8,7 +8,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flaskr import create_app
 from models import setup_db, Question, Category
 
-from config import DB_PASSWORD, DB_HOST, DB_USER
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DB_HOST = os.environ.get("DB_HOST")
 
 class TriviaTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
