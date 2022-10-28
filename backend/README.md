@@ -110,7 +110,7 @@ Our API is a REST API. The API can receive json object body request, search para
 
 ### Getting Started
 
-- Base URL : For now, this API can only run locally and is not hosted as base URL. Hosted at the default localhost + /API, `http://localhost:5000/api`.
+- Base URL : For now, this API can only run locally and is not hosted as base URL. Hosted at the default localhost, `http://localhost:5000/`.
 
 ### Error Handling
 There are four errors handler for four errors. The errors returned json object in the following format:
