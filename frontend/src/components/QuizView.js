@@ -176,25 +176,25 @@ class QuizView extends Component {
       this.renderFinalScore()
     ) : this.state.showAnswer ? (
       this.renderCorrectAnswer()
-    ) : this.state.totalQuestions === null ? (
-      setTimeout(() => {
-      
-      }, "1")
-    ) : (<div className='quiz-play-holder'>
-        <div className='quiz-question'>
-          <h5>{this.state.currentQuestion.question}</h5>
-          <small>Total Questions: {this.state.totalQuestions}</small>
+    ) : this.state.totalQuestions !== null ? (
+        <div className='quiz-play-holder'>
+          <div className='quiz-question'>
+            <h5>{this.state.currentQuestion.question}</h5>
+            <small>Total Questions: {this.state.totalQuestions}</small>
+          </div>
+          <form onSubmit={this.submitGuess}>
+            <input type='text' name='guess' onChange={this.handleChange} />
+            <input
+              className='submit-guess button'
+              type='submit'
+              value='Submit Answer'
+            />
+          </form>
         </div>
-        <form onSubmit={this.submitGuess}>
-          <input type='text' name='guess' onChange={this.handleChange} />
-          <input
-            className='submit-guess button'
-            type='submit'
-            value='Submit Answer'
-          />
-        </form>
-      </div>
-      );
+    ) : (
+      setTimeout(() => {
+      }, 1)
+    )
   }
 
   render() {
