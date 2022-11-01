@@ -177,7 +177,10 @@ class QuizView extends Component {
     ) : this.state.showAnswer ? (
       this.renderCorrectAnswer()
     ) : this.state.totalQuestions !== null ? (
-      <div className='quiz-play-holder'>
+      setTimeout(() => {
+      
+      }, "1")
+    ) : (<div className='quiz-play-holder'>
         <div className='quiz-question'>
           <h5>{this.state.currentQuestion.question}</h5>
           <small>Total Questions: {this.state.totalQuestions}</small>
@@ -191,9 +194,7 @@ class QuizView extends Component {
           />
         </form>
       </div>
-    ) : (setTimeout(() => {
-      
-    }, "1"));
+      );
   }
 
   render() {
