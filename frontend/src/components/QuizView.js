@@ -176,7 +176,7 @@ class QuizView extends Component {
       this.renderFinalScore()
     ) : this.state.showAnswer ? (
       this.renderCorrectAnswer()
-    ) : this.state.totalQuestions !== null ? (
+    ) : this.state.totalQuestions === null ? (
       setTimeout(() => {
       
       }, "1")
